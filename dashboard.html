@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang = "en">
+    
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="css_dashboard.css">
+
+</head>
+    
+<body>
+
+<h1 style="text-decoration: underline overline; font-size: 40px;">COVID-19 Data Hub</h1>
+<div id = "titleTwo"><h2>Total vaccination levels for each age group:</h2></div>
+    
+    
+
+<div class = "topPageData">   
+    <div class = "totalVax">
+        <p>Total number of Vaccinations: <span id="total"></span></p> 
+        
+    </div>
+    
+    <div class= "firstFour">
+        <p>10 to 19: <span id="Age10to19"></span></p>
+        <p>20 to 29: <span id="Age20to29"></span></p>
+        <p>30 to 39: <span id="Age30to39"></span></p>
+        <p>40 to 49: <span id="Age40to49"></span></p>
+    </div>
+    <div class = "secondFour">
+        <p>50 to 59: <span id="Age50to59"></span></p>
+        <p>60 to 69: <span id="Age60to69"></span></p>
+        <p>70 to 79: <span id="Age70to79"></span></p>
+        <p>80+ : <span id="Age80"></span></p>
+    </div>
+</div>
+<div class = "changeToPerecentage">
+    <h2>Change above numbers to percentage or raw values:</h2>
+    <button id="RawNumbers">Raw Numbers</button>
+    <button id="Percentage">Percentage</button>
+</div>
+
+
+
+
+ 
+<div class="weekDropdown">
+    <select id="selectWeek" name="Weeks" style="font-family: monospace;">
+        <option value="2021-W01">2021-W01</option>
+    </select>
+</div>
+ 
+<div class='weekdropdowndata'>
+    <div class="first-set">
+        <p>Total weekly Vaccines: <span id="total-week" ></span></p>
+        <p>Moderna: <span id="moderna"></span></p>
+        <p>Pfizer: <span id="pfizer" ></span></p>
+        <p>Janssen: <span id="janssen"></span></p>
+        <p>AstraZeneca: <span id="astrazeneca"></span></p>
+    </div>
+    <div class="second-set">
+        <p>Fully Vaccinated Cumulative Age 10 to 29 : <span id="FullyCum_Age10to19"></span></p>
+        <p>Fully Vaccinated Cumulative Age 20 to 29: <span id="FullyCum_Age20to29"></span></p>
+        <p>Fully Vaccinated Cumulative Age 30 to 39: <span id="FullyCum_Age30to39"></span></p>
+        <p>Fully Vaccinated Cumulative Age 40 to 49: <span id="FullyCum_Age40to49"></span></p>
+        <p>Fully Vaccinated Cumulative Age 50 to 59: <span id="FullyCum_Age50to59"></span></p>
+        <p>Fully Vaccinated Cumulative Age 60 to 69: <span id="FullyCum_Age60to69"></span></p>
+        <p>Fully Vaccinated Cumulative Age 70 to 79: <span id="FullyCum_Age70to79"></span></p>
+        <p>Fully Vaccinated Cumulative Aged 80+ : <span id="FullyCum_80_"></span></p>
+    </div>
+</div>
+ 
+<!-- Make sure to select more than one county -->    
+<div class="county-names">
+    <p> County with highest COVID rate proportionally: <span id="max" style="color: red;"></span></p>
+    <p> County with lowest COVID rate proportionally: <span id="min" style="color: green;"></span></p>
+</div>
+
+<div class="CountyweekDropdown">
+<select style="font-family: monospace;" id="selectCounty" name="County" onchange="selectData()">
+    <option  disabled selected>Select Counties to Compare</option>
+    
+</select>
+</div>  
+
+<div id="container">
+
+    
+</div>
+    
+<button style="font-family: monospace" onClick="window.location.reload();">Clear Counties</button>
+    
+
+
+
+    
+
+<script>
+    
+//global variables
+var vaccinationData=[];
+var countyData=[];
+    
+    
+
+
+//vacination data
+var xmlhttp = new XMLHttpRequest();
+var url = "https://services-eu1.arcgis.com/z6bHNio59iTqqSUY/arcgis/rest/services/COVID19_Weekly_Vaccination_Figures/FeatureServer/0/query?where=1%3D1&outFields=Week,TotalweeklyVaccines,NA,Moderna,Pfizer,Janssen,AstraZeneca,FullyPer_Age10to19,FullyPer_Age20to29,FullyPer_Age30to39,FullyPer_Age40to49,FullyPer_Age50to59,FullyPer_Age60to69,FullyPer_Age70to79,FullyPer_80_,FullyCum_Age10to19,FullyCum_Age20to29,FullyCum_Age30to39,FullyCum_Age40to49,FullyCum_Age50to59,FullyCum_Age60to69,FullyCum_Age70to79,FullyCum_80_,Fully_Age10to19,Fully_Age20to29,Fully_Age30to39,Fully_Age40to49,Fully_Age50to59,Fully_Age60to69,Fully_Age70to79,Fully_Age80_&outSR=4326&f=json";
+
+xmlhttp.onreadystatechange = function() {
+    if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+        
+        vaccinationData = 
+        JSON.parse(xmlhttp.responseText);
+// attaching sum total
+       let total = sum(vaccinationData.features, "TotalweeklyVaccines");
+       let information = vaccinationData.features;
+        let lastWeek = information[information.length -1];
+        //console.log(lastWeek);
+// this will display by default:
+        document.getElementById("Age10to19").innerHTML = lastWeek.attributes.FullyCum_Age10to19;
+            document.getElementById("Age20to29").innerHTML = lastWeek.attributes.FullyCum_Age20to29;
+            document.getElementById("Age30to39").innerHTML = lastWeek.attributes.FullyCum_Age30to39;
+            document.getElementById("Age40to49").innerHTML = lastWeek.attributes.FullyCum_Age40to49;
+            document.getElementById("Age50to59").innerHTML = lastWeek.attributes.FullyCum_Age50to59;
+            document.getElementById("Age60to69").innerHTML = lastWeek.attributes.FullyCum_Age60to69;
+            document.getElementById("Age70to79").innerHTML = lastWeek.attributes.FullyCum_Age70to79;
+            document.getElementById("Age80").innerHTML = lastWeek.attributes.FullyCum_80_;
+//buttons for percentage
+        var RawNumbers = document.getElementById("RawNumbers");
+        var Percentage = document.getElementById("Percentage");
+        RawNumbers.onclick = function(){
+            document.getElementById("Age10to19").innerHTML = lastWeek.attributes.FullyCum_Age10to19;
+            document.getElementById("Age20to29").innerHTML = lastWeek.attributes.FullyCum_Age20to29;
+            document.getElementById("Age30to39").innerHTML = lastWeek.attributes.FullyCum_Age30to39;
+            document.getElementById("Age40to49").innerHTML = lastWeek.attributes.FullyCum_Age40to49;
+            document.getElementById("Age50to59").innerHTML = lastWeek.attributes.FullyCum_Age50to59;
+            document.getElementById("Age60to69").innerHTML = lastWeek.attributes.FullyCum_Age60to69;
+            document.getElementById("Age70to79").innerHTML = lastWeek.attributes.FullyCum_Age70to79;
+            document.getElementById("Age80").innerHTML = lastWeek.attributes.FullyCum_80_;
+        };
+// rounding numbers code adapted from https://stackoverflow.com/questions/6134039/format-number-to-always-show-2-decimal-places
+        Percentage.onclick = function(){
+            document.getElementById("Age10to19").innerHTML = Math.round(lastWeek.attributes.FullyPer_Age10to19 * 100).toFixed(2) + "%";
+            document.getElementById("Age20to29").innerHTML = Math.round(lastWeek.attributes.FullyPer_Age20to29 * 100).toFixed(2) + "%";
+            document.getElementById("Age30to39").innerHTML = Math.round(lastWeek.attributes.FullyPer_Age30to39 * 100).toFixed(2) + "%";
+            document.getElementById("Age40to49").innerHTML = Math.round(lastWeek.attributes.FullyPer_Age40to49 * 100).toFixed(2) + "%";
+            document.getElementById("Age50to59").innerHTML = Math.round(lastWeek.attributes.FullyPer_Age50to59 * 100).toFixed(2) + "%";
+            document.getElementById("Age60to69").innerHTML = Math.round(lastWeek.attributes.FullyPer_Age60to69 * 100).toFixed(2) + "%";
+            document.getElementById("Age70to79").innerHTML = lastWeek.attributes.FullyPer_Age70to79 * 100 + "%";
+            document.getElementById("Age80").innerHTML = lastWeek.attributes.FullyPer_80_ * 100 + "%";
+        };
+      
+       //console.log(total)
+        let foundTotal = document.getElementById("total");
+        console.log(foundTotal);
+        foundTotal.innerHTML = total;
+    }
+// error handling
+    else {xmlhttp.onerror = function() {
+  console.error('An error occurred fetching the JSON from ' + url);};}
+};
+
+xmlhttp.open("GET", url, true);
+xmlhttp.send();
+    
+//function for adding up total number of vaccinations from the 1st week of the year    
+let sum = function(data, x){
+       var total = 0;
+       for (var i = 1; i < data.length; i++) {
+           //console.log(data[i].attributes[x])
+              total = total + data[i].attributes[x];
+            }
+       return total;
+};
+
+
+    
+
+// drop down menu- code was adopted from https://www.codebyamir.com/blog/populate-a-select-dropdown-list-with-json
+
+let dropdown = document.getElementById('selectWeek');
+dropdown.length = 0;
+
+let defaultOption = document.createElement('option');
+defaultOption.text = 'Choose a Week';
+
+dropdown.add(defaultOption);
+dropdown.selectedIndex = 0;
+
+
+const request = new XMLHttpRequest();
+request.open('GET', url, true);
+
+request.onload = function() {
+  if (request.status === 200) {
+    const obj = JSON.parse(request.responseText);
+      vaccinationData = obj.features
+      //console.log(obj.features)
+    let option;
+    for (let i = 1; i < vaccinationData.length; i++) {
+        //console.log(vaccinationData)
+      option = document.createElement('option');
+      option.text = obj.features[i].attributes.Week;
+      option.value = obj.features[i].attributes.TotalweeklyVaccines;
+      dropdown.add(option);
+    }
+   } 
+}
+// error handling 
+request.onerror = function() {
+  console.error('An error occurred fetching the JSON from ' + url);
+};
+
+request.send();
+    
+
+    
+
+    
+
+
+// Filtering through the vaccination data with drop down selection;
+const filterValue= document.getElementById("selectWeek");
+
+// add event listenter, adapted from https://www.w3schools.com/js/js_htmldom_eventlistener.asp
+// arrow function https://www.w3schools.com/js/js_es6.asp
+filterValue.addEventListener("change", ()=> {
+
+// arrow functoin https://www.w3schools.com/js/js_es6.asp
+const filteredData = vaccinationData.filter(item=> item.attributes.TotalweeklyVaccines == filterValue.value );
+
+//console.log(vaccinationData.filter);
+
+document.getElementById("total-week").innerHTML= filteredData[0].attributes.TotalweeklyVaccines;
+document.getElementById("moderna").innerHTML= filteredData[0].attributes.Moderna;
+document.getElementById("pfizer").innerHTML= filteredData[0].attributes.Pfizer;
+document.getElementById("janssen").innerHTML= filteredData[0].attributes.Janssen;
+document.getElementById("astrazeneca").innerHTML= filteredData[0].attributes.AstraZeneca;
+document.getElementById("FullyCum_Age10to19").innerHTML= filteredData[0].attributes.FullyCum_Age10to19;
+document.getElementById("FullyCum_Age20to29").innerHTML= filteredData[0].attributes.FullyCum_Age20to29;
+document.getElementById("FullyCum_Age30to39").innerHTML= filteredData[0].attributes.FullyCum_Age30to39;
+document.getElementById("FullyCum_Age40to49").innerHTML= filteredData[0].attributes.FullyCum_Age40to49;
+document.getElementById("FullyCum_Age50to59").innerHTML= filteredData[0].attributes.FullyCum_Age50to59;
+document.getElementById("FullyCum_Age60to69").innerHTML= filteredData[0].attributes.FullyCum_Age60to69;
+document.getElementById("FullyCum_Age70to79").innerHTML= filteredData[0].attributes.FullyCum_Age70to79;
+document.getElementById("FullyCum_80_").innerHTML= filteredData[0].attributes.FullyCum_80_;
+
+
+});
+    
+ 
+    
+// county data
+//global variable
+let featuresArray = []; 
+var xmlhttp2 = new XMLHttpRequest();
+var url = "https://services1.arcgis.com/eNO7HHeQ3rUcBllm/arcgis/rest/services/Covid19CountyStatisticsHPSCIrelandOpenData/FeatureServer/0/query?where=1%3D1&outFields=CountyName,PopulationCensus16,ConfirmedCovidCases,PopulationProportionCovidCases&outSR=4326&f=json";   
+
+xmlhttp2.onreadystatechange = function() {
+    if (xmlhttp2.readyState == 4 && xmlhttp2.status == 200) {
+        
+        //Parse the JSON data to a JavaScript variable. 
+        countyData = JSON.parse(xmlhttp2.responseText);
+        //console.log(countyData)
+         featuresArray = countyData.features;
+       // console.log(featuresArray);
+        let countyNames = featuresArray.map((data) => data.attributes.CountyName);
+        //console.log(countyNames)
+        //var values = featuresArray.map(val => val.attributes.ConfirmedCovidCases);
+        let  selectCounty = document.getElementById('selectCounty')
+        for(let i=0; i< countyNames.length; i++) {
+         let option = document.createElement('option');
+            option.innerHTML = countyNames[i];
+            option.setAttribute("value", countyNames[i]);
+            //console.log(option)
+          selectCounty.appendChild(option);
+            
+            
+ 
+
+  
+        }
+    
+ // code adapted from https://stackoverflow.com/questions/1669190/find-the-min-max-element-of-an-array-in-javascript          
+let maxofdata = Math.max.apply(Math, featuresArray.map(function(o) { return o.attributes.PopulationProportionCovidCases; }));
+console.log(maxofdata);
+let minofdata = Math.min.apply(Math, featuresArray.map(function(f) { return f.attributes.PopulationProportionCovidCases; }));
+console.log(minofdata);
+        
+// find value in array adapted from https://www.w3schools.com/jsref/jsref_find.asp        
+let maxName= featuresArray.find(feature=> feature.attributes.PopulationProportionCovidCases == maxofdata);
+let minName= featuresArray.find(feature=> feature.attributes.PopulationProportionCovidCases == minofdata);
+console.log(maxName);
+
+document.getElementById("max").innerHTML= maxName.attributes.CountyName;
+document.getElementById("min").innerHTML= minName.attributes.CountyName;
+
+        
+    }
+// error handling
+    else {xmlhttp2.onerror = function() {
+  console.error('An error occurred fetching the JSON from ' + url);};}
+
+};
+    
+
+xmlhttp2.open("GET", url, true);
+xmlhttp2.send();
+    
+function selectData(event) {
+    let container= document.getElementById("container");
+    
+    let selectedValue = document.getElementById('selectCounty').value;
+   let foundFeature = featuresArray.find((feature) => feature.attributes.CountyName == selectedValue);
+    
+// use of backticks adapted from https://www.youtube.com/watch?v=SKkFZcTHHWs
+    let text= `
+        <div class="info-data">
+           <h1>${foundFeature.attributes.CountyName}</h1>
+            <p>Population: <span id="pc">${foundFeature.attributes.PopulationCensus16}</span></p>
+            <p>Confirmed Covid-19 cases:  <span id="confirmedcases">${foundFeature.attributes.ConfirmedCovidCases}</span></p>
+            <p>Population Proportion Covid Cases: <span id="populationproportion">${foundFeature.attributes.PopulationProportionCovidCases}</span></p>
+        </div>
+        `;
+ // code adapted from https://www.w3schools.com/jsref/met_node_insertadjacenthtml.asp   
+container.insertAdjacentHTML("beforeEnd", text);
+    
+
+    
+}
+
+
+
+    
+
+    
+    
+
+
+
+
+
+
+    
+</script>
+
+<div class="footer">
+ <h5 style="font-size:18px">Corona Virus - Ireland</h5>
+</div>
+
+</body> 
+    
+</html>

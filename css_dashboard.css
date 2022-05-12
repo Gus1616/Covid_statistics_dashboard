@@ -1,0 +1,151 @@
+html {
+    background: #686868;
+    min-height: 2850px;
+    margin-left: 9%;
+    margin-right: 9%;
+    font-family: monospace;
+}
+
+H1 { text-align: center; 
+
+}
+
+p { text-align: center;
+    font-size: 30px;
+
+}
+
+.weekDropdown {
+  background-color: grey;
+    padding: 16px;
+  font-size: 16px;
+  border: none;
+ font-family: monospace;
+}
+
+#Age10to19, #moderna, #pfizer, #janssen, #astrazeneca, #FullyCum_Age10to19, #total-week, #FullyCum_Age10to19, #FullyCum_Age20to29, #FullyCum_Age30to39, #FullyCum_Age40to49, #FullyCum_Age50to59, #FullyCum_Age60to69, #FullyCum_Age70to79, #FullyCum_80_, #pc, #confirmedcases, #populationproportion  {
+    color: blue;   
+    
+}
+#Age20to29 {
+    color: blue;   
+    
+}
+#Age30to39 {
+    color: blue;   
+    
+}
+#Age40to49 {
+    color: blue;   
+    
+}
+#Age50to59 {
+    color: blue;   
+    
+}
+#Age60to69 {
+    color: blue;   
+    
+}
+
+#Age70to79 {
+    color: blue;   
+    
+}
+#Age70to79 {
+    color: blue;   
+    
+}
+#Age80 {
+    color: blue;
+    
+}
+#total {
+    color: blue;
+    
+}
+
+#container{
+    display: flex;
+    flex-direction: row;
+    justify-content:space-between;
+    flex-wrap: wrap;
+}
+
+.info-data{
+    width: 30%;
+    margin-right: 10px;
+}
+
+.weekdropdowndata {
+   display: flex;
+   flex-direction: row;
+   justify-content:space-between;
+   font-family: monospace;
+}
+.first-set, .second-set{
+    width: 40%;
+}
+.county-names{
+    border: 15px solid grey;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-family: monospace;
+}
+select{
+    width: 400px;
+    height: 50px;
+    margin-left: 40%;
+    font-size: 24px;
+    padding: 5px;
+}
+
+.topPageData {
+    display: flex;
+   flex-direction: row;
+   justify-content:space-between;
+      
+}
+
+.totalVax, .firstFour, .secondFour{
+    width: 40%;
+}
+.totalVax{
+    border: 15px solid grey;
+    margin-top: 10px;
+    margin-bottom: auto;
+    
+}
+
+#RawNumbers, #Percentage {
+    
+    font-size: 18px;
+    cursor: pointer;
+    padding: 5px;
+    margin-bottom: 10%;
+    margin-left: 5%;
+    font-family: monospace;
+    background-color: black;
+    color: white;
+    
+}
+#RawNumbers {
+    margin-left: 55%;
+}
+
+.footer {
+   position: fixed;
+   left: 0;
+   bottom: 0;
+   width: 100%;
+   color: white;
+   text-align: center;
+    background-color: black;
+}
+
+#titleTwo {
+    
+    position:relative;
+    left: 40%;
+    padding: 25px;
+}
